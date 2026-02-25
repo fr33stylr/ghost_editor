@@ -1,9 +1,13 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
+import Underline from '@tiptap/extension-underline';
+import Link from '@tiptap/extension-link';
 import EditorHeader from './EditorHeader';
+import EditorBubbleMenu from './EditorBubbleMenu';
 import { useEditorStore } from '../store/useEditorStore';
 import { useEffect, useRef } from 'react';
+import EditorSlashMenu from './EditorSlashMenu';
 
 export default function Editor() {
   const { title, setTitle, setContent, setSaveStatus } = useEditorStore();
@@ -12,8 +16,15 @@ export default function Editor() {
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Underline,
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          class: 'text-blue-600 underline decoration-blue-300 underline-offset-2 cursor-pointer',
+        },
+      }),
       Placeholder.configure({
-        placeholder: 'Begin writing your post...',
+        placeholder: "Type '/' for commands",
       }),
     ],
     content: '',
@@ -65,8 +76,11 @@ export default function Editor() {
           className="w-full resize-none overflow-hidden bg-transparent text-4xl sm:text-5xl font-bold text-gray-900 placeholder-gray-300 border-none focus:ring-0 focus:outline-none mb-8 leading-tight"
         />
 
-        {/* Tiptap Editor body (Bubble Menu Removed!) */}
+        {/* Tiptap Editor body */}
         <div className="relative">
+          {/* Our Custom Bubble Menu inserted here! */}
+          <EditorBubbleMenu editor={editor} />
+          <EditorSlashMenu editor={editor} />
           <EditorContent editor={editor} />
         </div>
       </main>

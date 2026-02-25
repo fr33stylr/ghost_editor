@@ -8,6 +8,7 @@ import EditorBubbleMenu from './EditorBubbleMenu';
 import { useEditorStore } from '../store/useEditorStore';
 import { useEffect, useRef } from 'react';
 import EditorSlashMenu from './EditorSlashMenu';
+import Bookmark from './Bookmark';
 
 export default function Editor() {
   const { title, setTitle, setContent, setSaveStatus } = useEditorStore();
@@ -26,6 +27,7 @@ export default function Editor() {
       Placeholder.configure({
         placeholder: "Type '/' for commands",
       }),
+      Bookmark,
     ],
     content: '',
     onUpdate: ({ editor }) => {

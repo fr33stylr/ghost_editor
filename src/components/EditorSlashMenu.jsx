@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Type, Heading1, Heading2, List, ListOrdered, Quote, Minus } from 'lucide-react';
+import { Type, Heading1, Heading2, List, ListOrdered, Quote, Minus, Bookmark as BookmarkIcon } from 'lucide-react';
 
 export default function EditorSlashMenu({ editor }) {
   const [show, setShow] = useState(false);
@@ -60,6 +60,7 @@ export default function EditorSlashMenu({ editor }) {
     { name: 'Text', icon: <Type size={18} />, action: () => editor.chain().focus().setParagraph().run() },
     { name: 'Heading 1', icon: <Heading1 size={18} />, action: () => editor.chain().focus().toggleHeading({ level: 1 }).run() },
     { name: 'Heading 2', icon: <Heading2 size={18} />, action: () => editor.chain().focus().toggleHeading({ level: 2 }).run() },
+    { name: 'Bookmark', icon: <BookmarkIcon size={18} />, action: () => editor.chain().focus().insertContent({ type: 'bookmark' }).run() },
     { name: 'Bullet List', icon: <List size={18} />, action: () => editor.chain().focus().toggleBulletList().run() },
     { name: 'Numbered List', icon: <ListOrdered size={18} />, action: () => editor.chain().focus().toggleOrderedList().run() },
     { name: 'Quote', icon: <Quote size={18} />, action: () => editor.chain().focus().toggleBlockquote().run() },

@@ -1,13 +1,10 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Editor from './components/Editor'
 
 export default function App() {
   return (
-    <div className="p-10 max-w-2xl mx-auto prose prose-blue">
-      <h1>Ghost Editor Clone</h1>
-      <p>If this text looks nicely formatted, Tailwind v4 is working perfectly!</p>
+    // The Editor component now contains the full page layout (Header + Body)
+    <div className="min-h-screen bg-white text-gray-900 selection:bg-blue-200">
+      <Editor />
     </div>
   )
 }

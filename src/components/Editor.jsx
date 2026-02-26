@@ -64,7 +64,7 @@ export default function Editor() {
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-lg sm:prose-xl focus:outline-none max-w-none min-h-[50vh]',
+        class: 'prose prose-lg sm:prose-xl font-serif text-gray-800 focus:outline-none max-w-none min-h-[50vh]',
       },
     },
   });
@@ -145,9 +145,11 @@ export default function Editor() {
           onChange={handleTitleChange}
           placeholder="Post title"
           rows={1}
-          className="w-full resize-none overflow-hidden bg-transparent text-4xl sm:text-5xl font-bold text-gray-900 placeholder-gray-300 border-none focus:ring-0 focus:outline-none mb-8 leading-tight"
+          className="w-full resize-none overflow-hidden bg-transparent text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 placeholder-gray-300 border-none focus:ring-0 focus:outline-none mb-8 leading-tight font-sans"
         />
 
+        <hr className="border-t border-gray-200 mb-8" />
+        
         {/* Tiptap Editor body */}
         <div className="relative">
           {/* Our Custom Bubble Menu inserted here! */}

@@ -13,6 +13,7 @@ import Bookmark from './Bookmark';
 import { CloudUpload, Trash2 } from 'lucide-react';
 import Youtube from './Youtube';
 import HtmlBlock from './HtmlBlock';
+import ImagePicker from './ImagePicker';
 
 export default function Editor() {
   const { title, setTitle, setContent, setSaveStatus } = useEditorStore();
@@ -60,6 +61,7 @@ export default function Editor() {
       Bookmark,
       Youtube,
       HtmlBlock,
+      ImagePicker,
       Image.configure({
         HTMLAttributes: {
           class: 'rounded-xl shadow-sm border border-gray-100 my-8 max-w-full', // Makes images look beautiful automatically

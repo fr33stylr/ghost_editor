@@ -1,10 +1,12 @@
-import { Plus, Image as ImageIcon, Code, Minus, Bookmark, Youtube } from 'lucide-react';
+import { Plus, Image as ImageIcon, Code, Minus, Bookmark, Youtube, Images } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
 export default function EditorFloatingMenu({ editor }) {
   const [show, setShow] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
+  
+  // Ref for the local image upload
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -42,17 +44,31 @@ export default function EditorFloatingMenu({ editor }) {
       setShow(true);
     };
 
+    const handleScroll = () => {
+      setShow(false);
+      setIsOpen(false);
+    };
+
     editor.on('transaction', handleUpdate);
     editor.on('selectionUpdate', handleUpdate);
     editor.on('focus', handleUpdate);
+
+    editor.view.dom.addEventListener('click', handleUpdate);
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
       editor.off('transaction', handleUpdate);
       editor.off('selectionUpdate', handleUpdate);
       editor.off('focus', handleUpdate);
+
+      if (editor.view?.dom) {
+        editor.view.dom.removeEventListener('click', handleUpdate);
+      }
+      window.removeEventListener('scroll', handleScroll);
     };
   }, [editor]);
 
+  // Handler for LOCAL Photo Uploads
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -64,17 +80,26 @@ export default function EditorFloatingMenu({ editor }) {
     }
   };
 
+  const handleHtmlInsert = () => {
+    const customHtml = window.prompt("Paste your raw HTML code here:");
+    if (customHtml) {
+      editor.chain().focus().insertContent(customHtml).run();
+    }
+  };
 
+  // Look here! Both Photo and Unsplash are included as separate tools.
   const actions = [
     { name: 'Photo', icon: <ImageIcon size={18} strokeWidth={1.5} />, action: () => fileInputRef.current?.click() },
     { name: 'HTML', icon: <Code size={18} strokeWidth={1.5} />, action: () => editor.chain().focus().insertContent({ type: 'htmlblock' }).run() },
     { name: 'Divider', icon: <Minus size={18} strokeWidth={1.5} />, action: () => editor.chain().focus().setHorizontalRule().run() },
     { name: 'Bookmark', icon: <Bookmark size={18} strokeWidth={1.5} />, action: () => editor.chain().focus().insertContent({ type: 'bookmark' }).run() },
     { name: 'Youtube', icon: <Youtube size={18} strokeWidth={1.5} />, action: () => editor.chain().focus().insertContent({ type: 'youtube' }).run() },
+    { name: 'Unsplash', icon: <Images size={18} strokeWidth={1.5} />, action: () => editor.chain().focus().insertContent({ type: 'imagepicker' }).run() },
   ];
 
   return (
     <>
+      {/* Hidden input for local file uploads (Triggered by the 'Photo' button) */}
       <input 
         type="file" 
         accept="image/*" 
@@ -91,7 +116,7 @@ export default function EditorFloatingMenu({ editor }) {
         >
           <div className="relative flex items-center">
             
-            {/* Light Mode Plus Button */}
+            {/* The + Button */}
             <button
               type="button"
               onClick={() => setIsOpen(!isOpen)}
@@ -104,7 +129,7 @@ export default function EditorFloatingMenu({ editor }) {
               <Plus size={22} strokeWidth={1.5} />
             </button>
 
-            {/* Light Mode Dropdown Menu */}
+            {/* The Dropdown Menu */}
             {isOpen && (
               <div className="absolute left-10 top-0 bg-white shadow-lg border border-gray-200 rounded-xl py-2 w-48 flex flex-col z-50 overflow-hidden">
                 {actions.map((item) => (

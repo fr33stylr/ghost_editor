@@ -76,7 +76,7 @@ export default function EditorSlashMenu({ editor }) {
       <div className="px-3 pb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
         Basic Blocks
       </div>
-      <div className="flex flex-col max-h-[300px] overflow-y-auto">
+      <div className="flex flex-col max-h-75 overflow-y-auto">
         {blocks.map((block) => (
           <button
             key={block.name}

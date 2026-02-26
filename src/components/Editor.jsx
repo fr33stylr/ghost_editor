@@ -13,6 +13,19 @@ import Bookmark from './Bookmark';
 export default function Editor() {
   const { title, setTitle, setContent, setSaveStatus } = useEditorStore();
   const titleRef = useRef(null);
+  const saveTimeoutRef = useRef(null);
+
+  const triggerSave = () => {
+    setSaveStatus('saving');
+    
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    
+    saveTimeoutRef.current = setTimeout(() => {
+      setSaveStatus('saved');
+    }, 1000);
+  };
 
   const editor = useEditor({
     extensions: [
@@ -33,7 +46,7 @@ export default function Editor() {
     onUpdate: ({ editor }) => {
       setContent(editor.getHTML());
       // Mocking a save interaction
-      setTimeout(() => setSaveStatus('saved'), 1000);
+      triggerSave();
     },
     editorProps: {
       attributes: {
@@ -53,7 +66,7 @@ export default function Editor() {
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
     // Mocking a save interaction
-    setTimeout(() => setSaveStatus('saved'), 1000);
+    triggerSave();
   };
 
   return (

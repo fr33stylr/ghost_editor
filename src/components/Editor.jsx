@@ -3,13 +3,16 @@ import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import Underline from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
+import Image from '@tiptap/extension-image';
 import EditorHeader from './EditorHeader';
 import EditorBubbleMenu from './EditorBubbleMenu';
 import { useEditorStore } from '../store/useEditorStore';
 import { useEffect, useRef, useState } from 'react';
-import EditorSlashMenu from './EditorSlashMenu';
+import EditorFloatingMenu from './EditorFloatingMenu';
 import Bookmark from './Bookmark';
 import { CloudUpload, Trash2 } from 'lucide-react';
+import Youtube from './Youtube';
+import HtmlBlock from './HtmlBlock';
 
 export default function Editor() {
   const { title, setTitle, setContent, setSaveStatus } = useEditorStore();
@@ -52,9 +55,16 @@ export default function Editor() {
         },
       }),
       Placeholder.configure({
-        placeholder: "Type '/' for commands",
+        placeholder: "Begin writing your post...",
       }),
       Bookmark,
+      Youtube,
+      HtmlBlock,
+      Image.configure({
+        HTMLAttributes: {
+          class: 'rounded-xl shadow-sm border border-gray-100 my-8 max-w-full', // Makes images look beautiful automatically
+        },
+      }),
     ],
     content: '',
     onUpdate: ({ editor }) => {
@@ -120,7 +130,7 @@ export default function Editor() {
             <img 
               src={coverImage} 
               alt="Cover" 
-              className="w-full h-[30vh] sm:h-[45vh] object-cover"
+              className="w-full h-auto rounded-xl"
             />
             
             {/* Hover Actions (Ghost Style) */}
@@ -149,12 +159,12 @@ export default function Editor() {
         />
 
         <hr className="border-t border-gray-200 mb-8" />
-        
+
         {/* Tiptap Editor body */}
         <div className="relative">
           {/* Our Custom Bubble Menu inserted here! */}
           <EditorBubbleMenu editor={editor} />
-          <EditorSlashMenu editor={editor} />
+          <EditorFloatingMenu editor={editor} />
           <EditorContent editor={editor} />
         </div>
       </main>

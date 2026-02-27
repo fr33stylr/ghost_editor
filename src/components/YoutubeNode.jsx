@@ -1,6 +1,5 @@
 import { NodeViewWrapper } from '@tiptap/react';
 import { useState } from 'react';
-import { Youtube } from 'lucide-react';
 
 export default function YoutubeNode({ node, updateAttributes }) {
   const [inputValue, setInputValue] = useState('');
@@ -23,7 +22,6 @@ export default function YoutubeNode({ node, updateAttributes }) {
     <NodeViewWrapper className="my-8">
       {!node.attrs.url ? (
         <div className="flex items-center gap-3 p-3 border-2 border-green-400 rounded-lg bg-white shadow-sm max-w-xl">
-          <Youtube className="text-red-500" size={24} />
           <input
             type="url"
             placeholder="Paste YouTube URL and press Enter..."

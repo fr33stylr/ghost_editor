@@ -6,8 +6,8 @@ import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import EditorHeader from './EditorHeader';
 import EditorBubbleMenu from './EditorBubbleMenu';
-import { useEditorStore } from '../store/useEditorStore';
-import { useEffect, useRef, useState } from 'react';
+import { usePostStore } from '../store/usePostStore';
+import { useEffect, useRef } from 'react'; // Removed useState, we use the store now
 import EditorFloatingMenu from './EditorFloatingMenu';
 import Bookmark from './Bookmark';
 import { CloudUpload, Trash2 } from 'lucide-react';
@@ -16,33 +16,24 @@ import HtmlBlock from './HtmlBlock';
 import ImagePicker from './ImagePicker';
 
 export default function Editor() {
-  const { title, setTitle, setContent, setSaveStatus } = useEditorStore();
   const titleRef = useRef(null);
   const saveTimeoutRef = useRef(null);
-
-  const [coverImage, setCoverImage] = useState(null);
   const fileInputRef = useRef(null);
+
+  // 1. Grab everything from the store
+  const { activePostId, posts, updateActivePost, saveStatus } = usePostStore();
+  const activePost = posts.find((p) => p.id === activePostId);
+
+  // Fallback if no active post is found
+  if (!activePost) return null;
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Creates an instant, temporary URL for the selected image
       const imageUrl = URL.createObjectURL(file);
-      setCoverImage(imageUrl);
-      triggerSave(); // Triggers the "Saving..." state in the header!
+      // Save directly to store
+      updateActivePost({ coverImage: imageUrl });
     }
-  };
-
-  const triggerSave = () => {
-    setSaveStatus('saving');
-    
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-    
-    saveTimeoutRef.current = setTimeout(() => {
-      setSaveStatus('saved');
-    }, 1000);
   };
 
   const editor = useEditor({
@@ -64,15 +55,19 @@ export default function Editor() {
       ImagePicker,
       Image.configure({
         HTMLAttributes: {
-          class: 'rounded-xl shadow-sm border border-gray-100 my-8 max-w-full', // Makes images look beautiful automatically
+          class: 'rounded-xl shadow-sm border border-gray-100 my-8 max-w-full',
         },
       }),
     ],
-    content: '',
+    content: activePost.content, // Set initial content from store
     onUpdate: ({ editor }) => {
-      setContent(editor.getHTML());
-      // Mocking a save interaction
-      triggerSave();
+      const html = editor.getHTML();
+      
+      // Debounced save logic
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = setTimeout(() => {
+        updateActivePost({ content: html });
+      }, 800);
     },
     editorProps: {
       attributes: {
@@ -81,28 +76,24 @@ export default function Editor() {
     },
   });
 
-  // Auto-resize the title textarea as the user types
+  // Sync title height whenever the title text changes in the store
   useEffect(() => {
     if (titleRef.current) {
       titleRef.current.style.height = 'auto';
       titleRef.current.style.height = titleRef.current.scrollHeight + 'px';
     }
-  }, [title]);
+  }, [activePost.title]);
 
   const handleTitleChange = (e) => {
-    setTitle(e.target.value);
-    // Mocking a save interaction
-    triggerSave();
+    updateActivePost({ title: e.target.value });
   };
 
   return (
     <div className="min-h-screen bg-white">
       <EditorHeader />
 
-      {/* Main Content Column with Generous Spacing */}
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
         
-        {/* Hidden File Input */}
         <input 
           type="file" 
           accept="image/*" 
@@ -111,37 +102,28 @@ export default function Editor() {
           onChange={handleImageUpload} 
         />
 
-        {/* Cover Image Area */}
-        {!coverImage ? (
+        {/* Use activePost.coverImage from store */}
+        {!activePost.coverImage ? (
           <div 
             onClick={() => fileInputRef.current?.click()}
             className="w-full py-16 bg-[#f8f9fa] border border-dashed border-gray-300 rounded-lg mb-10 flex flex-col items-center justify-center transition-colors hover:bg-gray-100 cursor-pointer"
           >
             <CloudUpload size={28} className="text-gray-500 mb-3" strokeWidth={1.5} />
-            
             <p className="text-sm text-gray-500 mb-1">
               <span className="font-semibold text-gray-700">Click to upload post cover</span> or drag and drop
             </p>
-            
-            <p className="text-xs text-gray-400">
-              SVG, PNG, JPG or GIF (MAX. 800x400px)
-            </p>
+            <p className="text-xs text-gray-400">SVG, PNG, JPG or GIF</p>
           </div>
         ) : (
           <div className="relative w-full mb-10 group rounded-xl overflow-hidden shadow-sm border border-gray-100">
             <img 
-              src={coverImage} 
+              src={activePost.coverImage} 
               alt="Cover" 
               className="w-full h-auto rounded-xl"
             />
-            
-            {/* Hover Actions (Ghost Style) */}
             <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-2">
                <button 
-                onClick={() => {
-                  setCoverImage(null);
-                  triggerSave();
-                }}
+                onClick={() => updateActivePost({ coverImage: null })}
                 className="p-2 bg-white/90 backdrop-blur text-red-600 rounded-lg shadow hover:bg-white transition-colors"
               >
                 <Trash2 size={18} />
@@ -150,10 +132,10 @@ export default function Editor() {
           </div>
         )}
 
-        {/* Seamless Title Input */}
+        {/* Use activePost.title from store */}
         <textarea
           ref={titleRef}
-          value={title}
+          value={activePost.title}
           onChange={handleTitleChange}
           placeholder="Post title"
           rows={1}
@@ -162,9 +144,7 @@ export default function Editor() {
 
         <hr className="border-t border-gray-200 mb-8" />
 
-        {/* Tiptap Editor body */}
         <div className="relative">
-          {/* Our Custom Bubble Menu inserted here! */}
           <EditorBubbleMenu editor={editor} />
           <EditorFloatingMenu editor={editor} />
           <EditorContent editor={editor} />

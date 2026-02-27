@@ -1,2 +1,36 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+
+/* Remove Vite default centering */
+body {
+  margin: 0;
+  display: flex;
+  place-items: start;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left; /* Fixes the centered title/text issue */
+}
+
+/* --- Tiptap Placeholder Logic --- */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+  /* Match your editor font */
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-style: italic;
+}
+
+/* Ensure the placeholder is visible even with Tailwind Prose */
+.prose .tiptap p.is-editor-empty:first-child::before {
+  font-size: 1.125rem; /* Match prose-lg/xl size */
+  line-height: 1.75;
+}

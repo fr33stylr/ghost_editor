@@ -48,6 +48,8 @@ export default function Editor() {
       }),
       Placeholder.configure({
         placeholder: "Begin writing your post...",
+        showOnlyWhenEditable: true, 
+        includeChildren: true,
       }),
       Bookmark,
       Youtube,
@@ -59,7 +61,7 @@ export default function Editor() {
         },
       }),
     ],
-    content: activePost.content, // Set initial content from store
+    content: activePost.content || '', // Set initial content from store
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       

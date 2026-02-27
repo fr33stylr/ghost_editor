@@ -1,76 +1,91 @@
-Ghost-Style Rich Text Editor
-A high-performance, minimalist content editor built with React, Tiptap, and Zustand. This project features a robust local-first data persistence model and a Ghost-inspired user interface.
 
-🚀 Setup Steps
-Clone and Install:
+# ✍️ Ghost-Style Rich Text Editor
 
-Bash
+A high-performance, minimalist content editor designed for a seamless writing experience. This platform leverages a local-first architecture with professional-grade typography and media handling, inspired by the Ghost CMS dashboard.
 
-git clone <your-repo-url>
-cd ghost-editor
-npm install
-Required Dependencies:
-Ensure these specific packages are installed:
+## 🛠️ Tech Stack
 
-Bash
+**Frontend:**
 
-npm install @tiptap/react @tiptap/starter-kit lucide-react zustand @tanstack/react-query date-fns uuid
-Run Development Server:
+* **React (Vite):** Fast, modern UI library for reactive state management.
+* **Tailwind CSS:** For professional, utility-first styling and Ghost-inspired aesthetics.
+* **Tiptap Editor:** A headless wrapper for ProseMirror, providing complete control over rich-text behavior.
+* **TanStack Query (React Query):** For efficient fetching and caching of external media assets.
+* **Lucide React:** For clean, consistent iconography throughout the interface.
 
-Bash
+**State & Persistence:**
 
-npm run dev
-✨ Feature List
-Ghost-Inspired Editor: Minimalist writing interface with a floating + menu and bubble formatting menu.
+* **Zustand:** Lightweight state management with custom middleware.
+* **LocalStorage:** Local-first persistence ensuring data remains available across browser sessions.
 
-Local Persistence: All posts are autosaved to localStorage using Zustand middleware.
+---
 
-Media Support:
+## ✨ Features by Module
 
-Local Uploads: Native file picker for cover images and inline photos.
+### 📝 The Editor (Writing Mode)
 
-Unsplash Integration: Inline image picker powered by TanStack Query and the Picsum API.
+* **Seamless Interface:** A distraction-free canvas with auto-resizing titles and serif typography.
+* **Bubble Menu:** Contextual formatting bar that appears on text selection for Bold, Italic, and Link actions.
+* **Floating Menu:** A dynamic `+` button on empty lines to insert images, YouTube embeds, or HTML blocks.
+* **Cover Images:** Ability to upload, preview, and remove high-resolution post headers.
+* **Autosave:** Real-time, debounced synchronization with the local store to prevent data loss.
 
-Embeds: Support for YouTube and custom HTML blocks.
+### 📊 Post Dashboard (Management)
 
-Post Management: Full Dashboard UI to create, search, and delete posts with custom modal confirmations.
+* **Search & Filter:** Real-time search functionality to navigate through large archives of content.
+* **Post List:** Overview of all drafts with "Last Updated" timestamps and content status indicators.
+* **CRUD Operations:** Create new stories instantly and delete unwanted drafts with a secure confirmation workflow.
+* **Empty State:** A beautiful, centered "Get Started" screen for new users with no existing content.
 
-Autosave: Debounced saving mechanism to ensure performance during fast typing.
+### 🛠️ Media & Advanced Blocks
 
-🏗️ Architecture Notes
-Store Shape (Zustand)
-The state is managed in a central usePostStore. Data is persisted as an array of objects to allow for multiple documents.
+* **Unsplash/Picsum Picker:** Integrated image browser for quick content enrichment.
+* **YouTube Embeds:** Native support for video embeds via URL.
+* **HTML Blocks:** Raw code injection for custom layouts or embedded third-party widgets.
 
-JavaScript
+---
 
-{
-  posts: [
-    {
-      id: "uuid-v4",
-      title: "Post Title",
-      content: "<p>HTML Content</p>",
-      coverImage: "blob-url-or-base64",
-      updatedAt: 1700000000000
-    }
-  ],
-  activePostId: "uuid-v4" || null,
-  saveStatus: "saved" || "saving"
-}
-Editor Nodes & Extensions
-Custom Nodes: ImagePicker, Youtube, Bookmark, and HtmlBlock.
+## 🗄️ Architecture Notes
 
-Floating Menu: Positioned dynamically based on the editor's cursor position; closes automatically on scroll.
+The project follows a modular React architecture:
 
-Query Usage
-@tanstack/react-query is used specifically for the ImagePicker to handle fetching, caching, and loading states for external image APIs without cluttering the global store.
+* **`App.jsx`**: Acts as the router, switching between `PostList` and `Editor` based on the `activePostId`.
+* **`usePostStore.js`**: Centralized Zustand store managing the post array, active selection, and save status.
+* **Custom Nodes**: Individual components for complex Tiptap extensions like `ImagePicker` and `HtmlBlock`.
 
-⚖️ Tradeoffs & Known Issues
-Tradeoffs
-Local-First: We chose localStorage for speed and zero-cost hosting. However, this means data is "siloed" to a single browser.
+---
 
-Blob URLs: Current cover images use URL.createObjectURL. These URLs are temporary and will break if the browser is restarted.
+## ⚖️ Tradeoffs & Known Issues
 
-Known Issues
-Storage Limits: localStorage has a limit (approx. 5MB). Large numbers of posts or high-res Base64 images may eventually cause a QuotaExceededError.
+* **Storage Quota:** Browser `localStorage` is capped at approximately **5MB**.
+* **Blob Persistence:** Uploaded cover images use `URL.createObjectURL`, which are session-based and will reset upon a hard browser refresh.
+* **Local-First:** Data is stored locally in the user's browser; clearing browser data will remove all posts.
 
-Vite Import Analysis: If uuid or date-fns are missing from node_modules, Vite will fail to resolve the build until npm install is re-run.
+---
+
+## 📸 Project Overview
+
+### 1. Dashboard & Empty State
+
+*Includes the "Start creating content" layout with centered navigation.*
+
+<img width="1861" height="922" alt="image" src="https://github.com/user-attachments/assets/6973a78c-618d-41ff-9c20-dec85b1644b7" />
+
+### 2. Rich Text Editor
+
+*The distraction-free writing environment with custom floating menus and headers.*
+
+<img width="1836" height="925" alt="image" src="https://github.com/user-attachments/assets/ad64e17b-4e9e-4c21-9d04-dcd83b647347" />
+
+<img width="1835" height="911" alt="image" src="https://github.com/user-attachments/assets/6d68e2fd-7861-4847-93af-f9d79bc26b32" />
+
+
+### 3. Post Management
+
+*The searchable archive list with delete confirmation.*
+
+<img width="1853" height="919" alt="image" src="https://github.com/user-attachments/assets/4f6204ba-5dfd-42e3-a089-aa3e2af8ca0a" />
+
+<img width="1861" height="921" alt="image" src="https://github.com/user-attachments/assets/84665d8e-497f-4b98-af39-198d0b2e6ce4" />
+
+---

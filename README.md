@@ -1,18 +1,76 @@
-# React + Vite
+Ghost-Style Rich Text Editor
+A high-performance, minimalist content editor built with React, Tiptap, and Zustand. This project features a robust local-first data persistence model and a Ghost-inspired user interface.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🚀 Setup Steps
+Clone and Install:
 
-Currently, two official plugins are available:
+Bash
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+git clone <your-repo-url>
+cd ghost-editor
+npm install
+Required Dependencies:
+Ensure these specific packages are installed:
 
-## React Compiler
+Bash
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+npm install @tiptap/react @tiptap/starter-kit lucide-react zustand @tanstack/react-query date-fns uuid
+Run Development Server:
 
-Note: This will impact Vite dev & build performances.
+Bash
 
-## Expanding the ESLint configuration
+npm run dev
+✨ Feature List
+Ghost-Inspired Editor: Minimalist writing interface with a floating + menu and bubble formatting menu.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Local Persistence: All posts are autosaved to localStorage using Zustand middleware.
+
+Media Support:
+
+Local Uploads: Native file picker for cover images and inline photos.
+
+Unsplash Integration: Inline image picker powered by TanStack Query and the Picsum API.
+
+Embeds: Support for YouTube and custom HTML blocks.
+
+Post Management: Full Dashboard UI to create, search, and delete posts with custom modal confirmations.
+
+Autosave: Debounced saving mechanism to ensure performance during fast typing.
+
+🏗️ Architecture Notes
+Store Shape (Zustand)
+The state is managed in a central usePostStore. Data is persisted as an array of objects to allow for multiple documents.
+
+JavaScript
+
+{
+  posts: [
+    {
+      id: "uuid-v4",
+      title: "Post Title",
+      content: "<p>HTML Content</p>",
+      coverImage: "blob-url-or-base64",
+      updatedAt: 1700000000000
+    }
+  ],
+  activePostId: "uuid-v4" || null,
+  saveStatus: "saved" || "saving"
+}
+Editor Nodes & Extensions
+Custom Nodes: ImagePicker, Youtube, Bookmark, and HtmlBlock.
+
+Floating Menu: Positioned dynamically based on the editor's cursor position; closes automatically on scroll.
+
+Query Usage
+@tanstack/react-query is used specifically for the ImagePicker to handle fetching, caching, and loading states for external image APIs without cluttering the global store.
+
+⚖️ Tradeoffs & Known Issues
+Tradeoffs
+Local-First: We chose localStorage for speed and zero-cost hosting. However, this means data is "siloed" to a single browser.
+
+Blob URLs: Current cover images use URL.createObjectURL. These URLs are temporary and will break if the browser is restarted.
+
+Known Issues
+Storage Limits: localStorage has a limit (approx. 5MB). Large numbers of posts or high-res Base64 images may eventually cause a QuotaExceededError.
+
+Vite Import Analysis: If uuid or date-fns are missing from node_modules, Vite will fail to resolve the build until npm install is re-run.

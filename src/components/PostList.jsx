@@ -75,10 +75,28 @@ export default function PostList() {
             </div>
           ))
         ) : (
-          <div className="text-center py-20 bg-gray-50 rounded-xl border border-dashed border-gray-200 mt-4">
-             <FileText className="mx-auto text-gray-300 mb-4" size={48} />
-             <p className="text-gray-500">No posts found. Create your first story!</p>
-          </div>
+                <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full max-w-sm px-6">
+            {/* The Pencil/Paper Icon */}
+            <div className="flex justify-center mb-6">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#e5e7eb" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                <path d="M15 5l4 4" />
+            </svg>
+            </div>
+            
+            {/* Text from your image */}
+            <h3 className="text-xl font-bold text-gray-900 mb-8">
+            Start creating content.
+            </h3>
+
+            {/* Green Button Style from your image */}
+            <button 
+            onClick={createPost}
+            className="bg-[#30c14c] hover:bg-[#2bc44a] text-white px-4 py-3 rounded-lg font-semibold transition-all shadow-sm"
+            >
+            Write a new post
+            </button>
+        </div>
         )}
       </div>
       <DeleteModal 
